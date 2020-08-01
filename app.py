@@ -43,13 +43,14 @@ def index():
 def upload():
     data = {"success":False}
     if request.method == 'POST':
-        if request.files.get("image"):
-            image=request.files["image"].read()
+        if request.files.get("file"):
+            image=request.files["file"].read()
             image = Image.open(io.BytesIO(image))
            
             data["predictions"]=[]
             width=300
             height=300
+            print("Prediction started")
             img = cv.cvtColor(numpy.array(image), cv.COLOR_BGR2RGB)
             img = cv.resize(img,(width,height))
            
@@ -98,20 +99,20 @@ def upload():
                         
                         r={"label": classNames[class_id],"probability":str(confidence),"x":W_pos,"y":H_pos}
                         data["predictions"].append(r)
-     #                   labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-      #                  yLeftBottom = max(yLeftBottom, labelSize[1])
-       #                 cv.putText(img, label, (xLeftBottom+5, yLeftBottom), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
+                        # labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+                        # yLeftBottom = max(yLeftBottom, labelSize[1])
+                        # cv.putText(img, label, (xLeftBottom+5, yLeftBottom), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
                         
-        #img = cv.imencode('.jpg', img)[1].tobytes()
+            img = cv.imencode('.jpg', img)[1].tobytes()
             data["success"]=True
-       # file = Image.open(request.files['file'].stream)
+            file = Image.open(request.files['file'].stream)
            
-    #print(data)        
+    print(data)        
     return jsonify(data)
-     #send_file(io.BytesIO(img),attachment_filename='image.jpg',mimetype='image/jpg')
+    send_file(io.BytesIO(img),attachment_filename='image.jpg',mimetype='image/jpg')
 
 
 if __name__ == "__main__":
    
     
-    app.run()
+    app.run(debug=True)
